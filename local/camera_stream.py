@@ -4,7 +4,7 @@ import json
 import time
 from cvzone.HandTrackingModule import HandDetector
 from pymongo.mongo_client import MongoClient
-import datetime
+from datetime import datetime
 
 # Initialize HandDetector for hand tracking
 detector = HandDetector(staticMode=False, maxHands=2, modelComplexity=1, detectionCon=0.5, minTrackCon=0.5)
