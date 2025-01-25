@@ -37,7 +37,7 @@ def countFingers(hand):
     global fingers
     fingerup = detector.fingersUp(hand)   
     
-    if fingerup == [0, 1, 0, 0, 0] and fingers != 0:
+    if fingerup == [0, 0, 0, 0, 0] and fingers != 0:
         fingers = 0
         return True
     elif fingerup == [0, 1, 0, 0, 0] and fingers != 1: 
@@ -96,7 +96,7 @@ def isDispensePill(hand):
 
     # Check if thumb and index tip are touching
     thumb_index_touching = False
-    if abs(thumb_tip[0] - index_tip[0]) < 20 and abs(thumb_tip[1] - index_tip[1] < 20):
+    if abs(thumb_tip[0] - index_tip[0]) < 40 and abs(thumb_tip[1] - index_tip[1] < 40):
         thumb_index_touching = True
 
     if middle_extended and ring_extended and pinky_extended and thumb_index_touching:
