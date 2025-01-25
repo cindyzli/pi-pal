@@ -12,7 +12,7 @@ import screenshotPayroll from '@/images/screenshots/payroll.png'
 import screenshotReporting from '@/images/screenshots/reporting.png'
 import screenshotVatReturns from '@/images/screenshots/vat-returns.png'
 
-const features = [
+let features = [
   {
     title: 'Patient 1',
     data: [
@@ -76,9 +76,20 @@ const features = [
 ]
 
 export function PrimaryFeatures() {
+  let [features, setFeatures] = useState([])
   let [tabOrientation, setTabOrientation] = useState('horizontal')
 
+  async function getData() {
+    const response = await fetch('/api')
+    const data = await response.json()
+    let newFeatures = data + features.slice(1, features.length)
+    setFeatures(newFeatures)
+  }
+
   useEffect(() => {
+    setFeatures(features)
+    getData()
+
     let lgMediaQuery = window.matchMedia('(min-width: 1024px)')
 
     function onMediaQueryChange({ matches }) {
