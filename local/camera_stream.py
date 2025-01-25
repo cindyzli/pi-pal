@@ -1,9 +1,10 @@
 import cv2
 import socket
 import json
-import time
+from time import sleep
 from cvzone.HandTrackingModule import HandDetector
 from pymongo.mongo_client import MongoClient
+from datetime import datetime
 
 # Initialize HandDetector for hand tracking
 detector = HandDetector(staticMode=False, maxHands=2, modelComplexity=1, detectionCon=0.5, minTrackCon=0.5)
@@ -27,7 +28,7 @@ buzzerFrames = 0
 pillFrames = 0
 
 # Raspberry Pi setup for sending commands
-raspberry_pi_ip = "10.150.242.209"  # Replace with your Pi's IP address
+raspberry_pi_ip = "10.150.237.86"  # Replace with your Pi's IP address
 raspberry_pi_port = 12345  # Port for communication
 
 # Initialize video capture
@@ -38,7 +39,7 @@ def countFingers(hand):
     global fingers
     fingerup = detector.fingersUp(hand)   
     
-    if fingerup == [0, 1, 0, 0, 0] and fingers != 0:
+    if fingerup == [0, 0, 0, 0, 0] and fingers != 0:
         fingers = 0
         return True
     elif fingerup == [0, 1, 0, 0, 0] and fingers != 1: 
@@ -97,7 +98,7 @@ def isDispensePill(hand):
 
     # Check if thumb and index tip are touching
     thumb_index_touching = False
-    if abs(thumb_tip[0] - index_tip[0]) < 20 and abs(thumb_tip[1] - index_tip[1] < 20):
+    if abs(thumb_tip[0] - index_tip[0]) < 40 and abs(thumb_tip[1] - index_tip[1] < 40):
         thumb_index_touching = True
 
     if middle_extended and ring_extended and pinky_extended and thumb_index_touching:
@@ -146,12 +147,22 @@ def process_frame_and_generate_command(img):
                 dispensePill = isDispensePill(h)
 
     if changeLed:
+        collection.insert_one({
+            "timestamp": datetime.now(),
+            "action": "dimming_lights",
+            "value": str(fingers * 20) + "%"
+        })
         return {
             "action": "adjust_led",
             "brightness": fingers * 20,
         }, img
 
     if soundBuzzer:
+        collection.insert_one({
+            "timestamp": datetime.now(),
+            "action": "call_sign",
+            "value": "emergency",
+        })
         buzzerFrames += 1
         if buzzerFrames == 5:
             buzzerFrames = 0
@@ -159,7 +170,12 @@ def process_frame_and_generate_command(img):
                 "action": "sound_buzzer",
             }, img
     
-    if dispensePill and face_recognized:
+    if dispensePill:
+        collection.insert_one({
+            "timestamp": datetime.now(),
+            "action": "nurse_request",
+            "value": "painkillers"
+        })
         pillFrames += 1
         if pillFrames == 5:
             pillFrames = 0
@@ -191,6 +207,7 @@ while True:
     command, img = process_frame_and_generate_command(frame)
     if command["action"] != "none": 
         send_command_to_pi(command, raspberry_pi_ip, raspberry_pi_port)
+        sleep(10)
 
     # Display the frame (optional for debugging)
     cv2.imshow("Camera Feed", img)
