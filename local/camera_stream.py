@@ -19,7 +19,11 @@ uri = "mongodb+srv://cyang2023:Bthgt0SuRB39sFB1@cluster0.ka5bm.mongodb.net/pi-pa
 client = MongoClient(uri)
 database = client["pi-pal"]
 collection = database["stats"]
+
+# Global counter variables
 fingers = 0
+buzzerFrames = 0
+pillFrames = 0
 
 # Raspberry Pi setup for sending commands
 raspberry_pi_ip = "10.150.242.209"  # Replace with your Pi's IP address
@@ -120,6 +124,8 @@ def process_frame_and_generate_command(img):
     soundBuzzer = False
     dispensePill = False
     global fingers
+    global buzzerFrames
+    global pillFrames
 
     gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
     
@@ -159,14 +165,20 @@ def process_frame_and_generate_command(img):
         }, img
 
     if soundBuzzer:
-        return {
-            "action": "sound_buzzer",
-        }, img
+        buzzerFrames += 1
+        if buzzerFrames == 5:
+            buzzerFrames = 0
+            return {
+                "action": "sound_buzzer",
+            }, img
     
     if dispensePill:
-        return {
-            "action": "dispense_pill",
-        }, img
+        pillFrames += 1
+        if pillFrames == 5:
+            pillFrames = 0
+            return {
+                "action": "dispense_pill",
+            }, img
     
     return {
         "action": "none",
