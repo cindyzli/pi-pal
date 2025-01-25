@@ -4,7 +4,6 @@ import json
 import time
 import random
 from cvzone.HandTrackingModule import HandDetector
-from playsound import playsound
 
 recognizer = cv2.face.LBPHFaceRecognizer_create()
 recognizer.read('face_recognizer.yml')
@@ -18,13 +17,33 @@ from pymongo.mongo_client import MongoClient
 uri = "mongodb+srv://cyang2023:Bthgt0SuRB39sFB1@cluster0.ka5bm.mongodb.net/pi-pal?retryWrites=true&w=majority&appName=Cluster0"
 
 client = MongoClient(uri)
-collection = client["stats"]
+database = client["pi-pal"]
+collection = database["stats"]
 fingers = 0
 
 # Function to process the frame and generate JSON commands
 def process_frame_and_generate_command(img):
 
-    hand, img = detector.findHands(img, draw=True, flipType=True)
+    hand, new_img = detector.findHands(img, draw=True, flipType=True)
+
+    gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
+    
+    faces = face_cascade.detectMultiScale(gray, scaleFactor=1.1, minNeighbors=5, minSize=(30, 30))
+    for (x, y, w, h) in faces:
+        face = gray[y:y+h, x:x+w]
+        label, confidence = recognizer.predict(face)
+        if confidence < 50:  # Threshold for recognition
+            cv2.putText(new_img, f"ID: {id_to_names[label]}, Conf: {int(confidence)}", (x, y - 10),
+                        cv2.FONT_HERSHEY_SIMPLEX, 0.8, (0, 255, 0), 2)
+            cv2.rectangle(new_img, (x, y), (x+w, y+h), (0, 255, 0), 2)
+            if not face_recognized:
+                face_recognized = True
+                print(f"Face recognized: {id_to_names[label]}")
+
+        else:
+            cv2.putText(new_img, "Unknown", (x, y - 10), cv2.FONT_HERSHEY_SIMPLEX, 0.8, (0, 0, 255), 2)
+            cv2.rectangle(new_img, (x, y), (x+w, y+h), (0, 0, 255), 2)
+
     send = False
     global fingers
 
@@ -57,7 +76,7 @@ def process_frame_and_generate_command(img):
 
     if send:
         # add number to history array
-        collection.update_one({"id": "light"}, {"$push": {"history": fingers}})
+        # collection.update_one({"id": "light"}, {"$push": {"history": fingers}})
 
         return {
             "action": "adjust_led",
@@ -93,26 +112,6 @@ while True:
     ret, frame = cap.read()  # Capture a frame
     if not ret:
         break
-
-    gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
-    
-    faces = face_cascade.detectMultiScale(gray, scaleFactor=1.1, minNeighbors=5, minSize=(30, 30))
-    for (x, y, w, h) in faces:
-        face = gray[y:y+h, x:x+w]
-        label, confidence = recognizer.predict(face)
-        if confidence < 36:  # Threshold for recognition
-            cv2.putText(frame, f"ID: {id_to_names[label]}, Conf: {int(confidence)}", (x, y - 10),
-                        cv2.FONT_HERSHEY_SIMPLEX, 0.8, (0, 255, 0), 2)
-            cv2.rectangle(frame, (x, y), (x+w, y+h), (0, 255, 0), 2)
-            if not face_recognized:
-                face_recognized = True
-                playsound('path/to/your/audio.mp3')
-
-        else:
-            cv2.putText(frame, "Unknown", (x, y - 10), cv2.FONT_HERSHEY_SIMPLEX, 0.8, (0, 0, 255), 2)
-            cv2.rectangle(frame, (x, y), (x+w, y+h), (0, 0, 255), 2)
-    
-    cv2.imshow('Face Recognition', frame)
 
     # Process the frame and generate a command
     command, img = process_frame_and_generate_command(frame)
