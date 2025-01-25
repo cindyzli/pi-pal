@@ -1,7 +1,7 @@
 import socket
 import json
 import RPi.GPIO as GPIO
-from gpiozero import Buzzer
+from gpiozero import Buzzer, AngularServo
 from time import sleep
 
 GPIO.cleanup()
@@ -18,6 +18,7 @@ pwm = GPIO.PWM(LED_PIN, 50)
 pwm.start(50)
 
 buzzer = Buzzer(17)
+servo = AngularServo(18, min_pulse_width=0.0006, max_pulse_width=0.0023)
 
 # Function to handle the incoming command
 def handle_command(command):
@@ -30,6 +31,13 @@ def handle_command(command):
         buzzer.on()
         sleep(2)
         buzzer.off()
+    if command["action"] == "dispense_pill":
+        servo.angle = 90
+        sleep(1)
+        servo.angle = 0
+        sleep(0.2)
+        servo.angle = 90
+        sleep(1)
         
 
 # Set up the server to keep listening for connections

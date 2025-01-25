@@ -12,7 +12,7 @@ import screenshotPayroll from '@/images/screenshots/payroll.png'
 import screenshotReporting from '@/images/screenshots/reporting.png'
 import screenshotVatReturns from '@/images/screenshots/vat-returns.png'
 
-const features = [
+let global_features = [
   {
     title: 'Patient 1',
     data: [
@@ -76,9 +76,24 @@ const features = [
 ]
 
 export function PrimaryFeatures() {
+  let [features, setFeatures] = useState([])
   let [tabOrientation, setTabOrientation] = useState('horizontal')
 
+  async function getData() {
+    console.log("hi")
+    const response = await fetch('/api')
+    console.log(global_features)
+    const data = await response.json()
+    console.log(data)
+    let newFeatures = [{ title: "Patient 1", data: data }].concat(global_features.slice(1, global_features.length))
+    console.log(newFeatures)
+    setFeatures(newFeatures)
+  }
+
   useEffect(() => {
+    setFeatures(features)
+    getData()
+
     let lgMediaQuery = window.matchMedia('(min-width: 1024px)')
 
     function onMediaQueryChange({ matches }) {
@@ -171,59 +186,59 @@ export function PrimaryFeatures() {
                       </p>
                     </div>
                     <div className="mt-10 w-[45rem] overflow-hidden rounded-xl bg-slate-50 shadow-xl shadow-green-900/20 sm:w-auto lg:mt-0 lg:w-[67.8125rem]">
-                      
 
-                      <div class="relative overflow-x-auto shadow-md sm:rounded-lg">
-                          <table class="w-full text-sm text-left rtl:text-right text-gray-500">
-                              <thead class="text-xs text-gray-700 uppercase bg-gray-200">
-                                  <tr>
-                                      <th scope="col" class="px-6 py-3">
-                                          Timestamp
-                                      </th>
-                                      <th scope="col" class="px-6 py-3">
-                                          Action
-                                      </th>
-                                      <th scope="col" class="px-6 py-3">
-                                          Value
-                                      </th>
-                                  </tr>
-                              </thead>
-                              <tbody>
-                                  <tr class="bg-gray-100 border-b border-gray-200 hover:bg-gray-200">
-                                      <th scope="row" class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap">
-                                          {feature.data[0].timestamp}
-                                      </th>
-                                      <td class="px-6 py-4">
-                                          {feature.data[0].action}
-                                      </td>
-                                      <td class="px-6 py-4">
-                                          {feature.data[0].value}
-                                      </td>
-                                  </tr>
-                                  <tr class="bg-gray-100 border-b border-gray-200 hover:bg-gray-200">
-                                      <th scope="row" class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap">
-                                          {feature.data[1].timestamp}
-                                      </th>
-                                      <td class="px-6 py-4">
-                                          {feature.data[1].action}
-                                      </td>
-                                      <td class="px-6 py-4">
-                                          {feature.data[1].value}
-                                      </td>
-                                  </tr>
-                                  <tr class="bg-gray-100 hover:bg-gray-200">
-                                      <th scope="row" class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap">
-                                          {feature.data[2].timestamp}
-                                      </th>
-                                      <td class="px-6 py-4">
-                                          {feature.data[2].action}
-                                      </td>
-                                      <td class="px-6 py-4">
-                                          {feature.data[2].value}
-                                      </td>
-                                  </tr>
-                              </tbody>
-                          </table>
+
+                      <div className="relative overflow-x-auto shadow-md sm:rounded-lg">
+                        <table className="w-full text-sm text-left rtl:text-right text-gray-500">
+                          <thead className="text-xs text-gray-700 uppercase bg-gray-200">
+                            <tr>
+                              <th scope="col" className="px-6 py-3">
+                                Timestamp
+                              </th>
+                              <th scope="col" className="px-6 py-3">
+                                Action
+                              </th>
+                              <th scope="col" className="px-6 py-3">
+                                Value
+                              </th>
+                            </tr>
+                          </thead>
+                          <tbody>
+                            <tr className="bg-gray-100 border-b border-gray-200 hover:bg-gray-200">
+                              <th scope="row" className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap">
+                                {feature.data[0].timestamp}
+                              </th>
+                              <td className="px-6 py-4">
+                                {feature.data[0].action}
+                              </td>
+                              <td className="px-6 py-4">
+                                {feature.data[0].value}
+                              </td>
+                            </tr>
+                            <tr className="bg-gray-100 border-b border-gray-200 hover:bg-gray-200">
+                              <th scope="row" className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap">
+                                {feature.data[1].timestamp}
+                              </th>
+                              <td className="px-6 py-4">
+                                {feature.data[1].action}
+                              </td>
+                              <td className="px-6 py-4">
+                                {feature.data[1].value}
+                              </td>
+                            </tr>
+                            <tr className="bg-gray-100 hover:bg-gray-200">
+                              <th scope="row" className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap">
+                                {feature.data[2].timestamp}
+                              </th>
+                              <td className="px-6 py-4">
+                                {feature.data[2].action}
+                              </td>
+                              <td className="px-6 py-4">
+                                {feature.data[2].value}
+                              </td>
+                            </tr>
+                          </tbody>
+                        </table>
                       </div>
 
                     </div>
