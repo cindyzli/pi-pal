@@ -4,13 +4,20 @@ import json
 import time
 import random
 from cvzone.HandTrackingModule import HandDetector
+from pymongo.mongo_client import MongoClient
 
+uri = "mongodb+srv://cyang2023:Bthgt0SuRB39sFB1@cluster0.ka5bm.mongodb.net/pi-pal?retryWrites=true&w=majority&appName=Cluster0"
+
+client = MongoClient(uri)
+collection = client["stats"]
+fingers = 0
 
 # Function to process the frame and generate JSON commands
 def process_frame_and_generate_command(img):
 
     hand, img = detector.findHands(img, draw=True, flipType=True)
-    fingers = 0
+    send = False
+    global fingers
 
     if hand:   
         # Find landmarks of the hand
@@ -22,26 +29,35 @@ def process_frame_and_generate_command(img):
             
             if fingerup == [0, 0, 0, 0, 0] and fingers != 0:
                 fingers = 0
-                print(fingers)
+                send = True
             if fingerup == [0, 1, 0, 0, 0] and fingers != 1: 
                 fingers = 1
-                print(fingers)
+                send = True
             if fingerup == [0, 1, 1, 0, 0] and fingers != 2: 
                 fingers = 2
-                print(fingers)
+                send = True
             if fingerup == [0, 1, 1, 1, 0] and fingers != 3: 
                 fingers = 3
-                print(fingers)
+                send = True
             if fingerup == [0, 1, 1, 1, 1] and fingers != 4: 
                 fingers = 4
-                print(fingers)
+                send = True
             if fingerup == [1, 1, 1, 1, 1] and fingers != 5: 
                 fingers = 5
-                print(fingers)
+                send = True
+
+    if send:
+        # add number to history array
+        collection.update_one({"id": "light"}, {"$push": {"history": fingers}})
+
+        return {
+            "action": "adjust_led",
+            "brightness": fingers*20,
+        }, img
+    
 
     return {
-        "action": "adjust_led",
-        "brightness": fingers*20,
+        "action": "none",
     }, img
 
 # Function to send command to Raspberry Pi
@@ -71,7 +87,7 @@ while True:
     command, img = process_frame_and_generate_command(frame)
 
     # Send the command to the Raspberry Pi
-    send_command_to_pi(command, raspberry_pi_ip, raspberry_pi_port)
+    if command["action"] != "none": send_command_to_pi(command, raspberry_pi_ip, raspberry_pi_port)
 
     # Display the frame (optional for debugging)
     cv2.imshow("Camera Feed", img)
