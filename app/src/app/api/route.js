@@ -7,5 +7,9 @@ export async function GET() {
     const collection = database.collection('stats')
     const patients = await collection.find().toArray()
     await client.close()
-    return patients
+    return new Response(JSON.stringify(patients), {
+        headers: {
+            'content-type': 'application/json',
+        },
+    })
 }
