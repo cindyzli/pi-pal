@@ -22,7 +22,7 @@ collection = database["stats"]
 fingers = 0
 
 # Raspberry Pi setup for sending commands
-raspberry_pi_ip = "10.150.242.209"  # Replace with your Pi's IP address
+raspberry_pi_ip = "10.150.237.86"  # Replace with your Pi's IP address
 raspberry_pi_port = 12345  # Port for communication
 
 # Initialize video capture
