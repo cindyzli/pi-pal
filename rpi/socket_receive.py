@@ -1,7 +1,8 @@
 import socket
 import json
 import RPi.GPIO as GPIO
-import time
+from gpiozero import Buzzer
+from time import sleep
 
 GPIO.cleanup()
 LED_PIN = 23
@@ -16,6 +17,8 @@ pwm = GPIO.PWM(LED_PIN, 50)
 # Start PWM with initial duty cycle 50%
 pwm.start(50)
 
+buzzer = Buzzer(17)
+
 # Function to handle the incoming command
 def handle_command(command):
     print(f"Received command: {command}")
@@ -23,6 +26,10 @@ def handle_command(command):
         brightness = command["brightness"]
         pwm.ChangeDutyCycle(brightness)
         print(f"Set LED brightness to {brightness}%")
+    if command["action"] == "sound_buzzer":
+        buzzer.on()
+        sleep(5)
+        buzzer.off()
         
 
 # Set up the server to keep listening for connections
