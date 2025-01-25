@@ -3,7 +3,6 @@ import socket
 import json
 import time
 from cvzone.HandTrackingModule import HandDetector
-from playsound import playsound
 from pymongo.mongo_client import MongoClient
 
 # Initialize HandDetector for hand tracking
@@ -67,18 +66,15 @@ def isBuzzer(hand, img):
     ring_curl = ring_tip[1] > landmarks[14][1]
 
     if thumb_extended and pinky_extended and index_curl and middle_curl and ring_curl:
-        return {
-            "action": "sound_buzzer",
-        }, img
+        return True
     
-    return {
-        "action": "none",
-    }, img
+    return False
 
 # Function to process the frame and generate JSON commands based on finger count
 def process_frame_and_generate_command(img):
     hand, img = detector.findHands(img, draw=True, flipType=True)
     send = False
+    soundBuzzer = False
     global fingers
 
     if hand:   
@@ -90,9 +86,7 @@ def process_frame_and_generate_command(img):
                 send = countFingers(h) != fingers
             elif h["type"] == "Left":
                 # Check for buzzer gesture with the left hand
-                action, img = isBuzzer(h, img)
-                if action["action"] == "sound_buzzer":
-                    playsound('audio/buzzer.mp3')  # Play buzzer sound
+                soundBuzzer = isBuzzer(h, img)
 
     if send:
         # add number to history array
@@ -102,10 +96,16 @@ def process_frame_and_generate_command(img):
             "action": "adjust_led",
             "brightness": fingers * 20,
         }, img
+
+    if soundBuzzer:
+        return {
+            "action": "sound_buzzer",
+        }, img
     
     return {
         "action": "none",
     }, img
+
 
 # Function to send command to Raspberry Pi
 def send_command_to_pi(command, host, port):
