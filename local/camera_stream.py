@@ -4,6 +4,15 @@ import json
 import time
 import random
 from cvzone.HandTrackingModule import HandDetector
+from playsound import playsound
+
+recognizer = cv2.face.LBPHFaceRecognizer_create()
+recognizer.read('face_recognizer.yml')
+face_cascade = cv2.CascadeClassifier(cv2.data.haarcascades + 'haarcascade_frontalface_default.xml')
+id_to_names = {}
+id_to_names[0] = "cindyli"
+id_to_names[1] = "elise"
+
 from pymongo.mongo_client import MongoClient
 
 uri = "mongodb+srv://cyang2023:Bthgt0SuRB39sFB1@cluster0.ka5bm.mongodb.net/pi-pal?retryWrites=true&w=majority&appName=Cluster0"
@@ -78,10 +87,32 @@ cap = cv2.VideoCapture(0)
 
 detector = HandDetector(staticMode=False, maxHands=1, modelComplexity=1, detectionCon=0.5, minTrackCon=0.5)
 
+face_recognized = False
+
 while True:
     ret, frame = cap.read()  # Capture a frame
     if not ret:
         break
+
+    gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
+    
+    faces = face_cascade.detectMultiScale(gray, scaleFactor=1.1, minNeighbors=5, minSize=(30, 30))
+    for (x, y, w, h) in faces:
+        face = gray[y:y+h, x:x+w]
+        label, confidence = recognizer.predict(face)
+        if confidence < 36:  # Threshold for recognition
+            cv2.putText(frame, f"ID: {id_to_names[label]}, Conf: {int(confidence)}", (x, y - 10),
+                        cv2.FONT_HERSHEY_SIMPLEX, 0.8, (0, 255, 0), 2)
+            cv2.rectangle(frame, (x, y), (x+w, y+h), (0, 255, 0), 2)
+            if not face_recognized:
+                face_recognized = True
+                playsound('path/to/your/audio.mp3')
+
+        else:
+            cv2.putText(frame, "Unknown", (x, y - 10), cv2.FONT_HERSHEY_SIMPLEX, 0.8, (0, 0, 255), 2)
+            cv2.rectangle(frame, (x, y), (x+w, y+h), (0, 0, 255), 2)
+    
+    cv2.imshow('Face Recognition', frame)
 
     # Process the frame and generate a command
     command, img = process_frame_and_generate_command(frame)
