@@ -113,6 +113,26 @@ while True:
     if not ret:
         break
 
+    gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
+    
+    faces = face_cascade.detectMultiScale(gray, scaleFactor=1.1, minNeighbors=5, minSize=(30, 30))
+    for (x, y, w, h) in faces:
+        face = gray[y:y+h, x:x+w]
+        label, confidence = recognizer.predict(face)
+        if confidence < 50:  # Threshold for recognition
+            cv2.putText(frame, f"ID: {id_to_names[label]}, Conf: {int(confidence)}", (x, y - 10),
+                        cv2.FONT_HERSHEY_SIMPLEX, 0.8, (0, 255, 0), 2)
+            cv2.rectangle(frame, (x, y), (x+w, y+h), (0, 255, 0), 2)
+            if not face_recognized:
+                face_recognized = True
+                # playsound('audio/accessgranted.mp3')
+
+        else:
+            cv2.putText(frame, "Unknown", (x, y - 10), cv2.FONT_HERSHEY_SIMPLEX, 0.8, (0, 0, 255), 2)
+            cv2.rectangle(frame, (x, y), (x+w, y+h), (0, 0, 255), 2)
+    
+    cv2.imshow('Face Recognition', frame)
+
     # Process the frame and generate a command
     command, img = process_frame_and_generate_command(frame)
 
