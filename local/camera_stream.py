@@ -171,7 +171,7 @@ def process_frame_and_generate_command(img):
                 "action": "sound_buzzer",
             }, img
     
-    if dispensePill:
+    if dispensePill and face_recognized:
         collection.insert_one({
             "timestamp": datetime.now(),
             "action": "nurse_request",
