@@ -28,7 +28,7 @@ def handle_command(command):
         print(f"Set LED brightness to {brightness}%")
     if command["action"] == "sound_buzzer":
         buzzer.on()
-        sleep(5)
+        sleep(2)
         buzzer.off()
         
 
