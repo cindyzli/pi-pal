@@ -16,11 +16,15 @@ pwm = GPIO.PWM(LED_PIN, 50)
 # Start PWM with initial duty cycle 50%
 pwm.start(50)
 
+executingCommand = False
+
 buzzer = Buzzer(17)
 servo = AngularServo(18, min_pulse_width=0.0006, max_pulse_width=0.0023)
 
 # Function to handle the incoming command
 def handle_command(command):
+    global executingCommand
+    executingCommand = True
     print(f"Received command: {command}")
     if command["action"] == "adjust_led":
         brightness = command["brightness"]
@@ -37,16 +41,17 @@ def handle_command(command):
         sleep(0.2)
         servo.angle = 90
         sleep(1)
+    executingCommand = False
         
-
 # Set up the server to keep listening for connections
 def start_server(host, port):
+    global executingCommand
     with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as server_socket:
         server_socket.bind((host, port))
         server_socket.listen(1)
         print(f"Listening for incoming connections on {host}:{port}...")
 
-        while True:
+        while not executingCommand:
             conn, addr = server_socket.accept()
             with conn:
                 print(f"Connected by {addr}")
