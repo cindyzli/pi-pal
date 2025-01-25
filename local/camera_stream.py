@@ -19,7 +19,11 @@ uri = "mongodb+srv://cyang2023:Bthgt0SuRB39sFB1@cluster0.ka5bm.mongodb.net/pi-pa
 client = MongoClient(uri)
 database = client["pi-pal"]
 collection = database["stats"]
+
+# Global counter variables
 fingers = 0
+buzzerFrames = 0
+pillFrames = 0
 
 # Raspberry Pi setup for sending commands
 raspberry_pi_ip = "10.150.237.86"  # Replace with your Pi's IP address
@@ -31,8 +35,23 @@ cap = cv2.VideoCapture(0)
 # Function to process frame and count fingers raised
 def countFingers(hand):
     global fingers
+    landmarks = hand['lmList']
+
     fingerup = detector.fingersUp(hand)   
-    if fingerup == [0, 0, 0, 0, 0] and fingers != 0:
+    
+    thumb_tip = landmarks[4]   # Thumb tip (x, y)
+    index_tip = landmarks[8]   # Index tip (x, y)
+    middle_tip = landmarks[12] # Middle tip (x, y)
+    ring_tip = landmarks[16]   # Ring tip (x, y)
+    pinky_tip = landmarks[20]  # Pinky tip (x, y)
+
+    thumb_curl = thumb_tip[1] > landmarks[2][1]
+    index_curl = index_tip[1] > landmarks[6][1]
+    middle_curl = middle_tip[1] > landmarks[10][1]
+    ring_curl = ring_tip[1] > landmarks[14][1]
+    pinky_curl = pinky_tip[1] > landmarks[18][1]
+
+    if thumb_curl and index_curl and middle_curl and ring_curl and pinky_curl:
         fingers = 0
         return True
     elif fingerup == [0, 1, 0, 0, 0] and fingers != 1: 
@@ -53,14 +72,14 @@ def countFingers(hand):
     return False
 
 # Function to check if left hand is making buzzer sign
-def isBuzzer(hand, img):
+def isBuzzer(hand):
     landmarks = hand['lmList']
 
     thumb_tip = landmarks[4]   # Thumb tip (x, y)
-    pinky_tip = landmarks[20]  # Pinky tip (x, y)
     index_tip = landmarks[8]   # Index tip (x, y)
     middle_tip = landmarks[12] # Middle tip (x, y)
     ring_tip = landmarks[16]   # Ring tip (x, y)
+    pinky_tip = landmarks[20]  # Pinky tip (x, y)
     
     # Check if thumb and pinky are extended
     thumb_extended = thumb_tip[1] < landmarks[3][1]
@@ -73,15 +92,40 @@ def isBuzzer(hand, img):
 
     if thumb_extended and pinky_extended and index_curl and middle_curl and ring_curl:
         return True
+    return False
+
+def isDispensePill(hand):
+    landmarks = hand['lmList']
+
+    thumb_tip = landmarks[4]   # Thumb tip (x, y)
+    index_tip = landmarks[8]   # Index tip (x, y)
+    middle_tip = landmarks[12] # Middle tip (x, y)
+    ring_tip = landmarks[16]   # Ring tip (x, y)
+    pinky_tip = landmarks[20]  # Pinky tip (x, y)
     
+    # Check if middle, ring, and pinky fingers are extended
+    middle_extended = middle_tip[1] < landmarks[9][1]
+    ring_extended = ring_tip[1] < landmarks[13][1]    
+    pinky_extended = pinky_tip[1] < landmarks[17][1]
+
+    # Check if thumb and index tip are touching
+    thumb_index_touching = False
+    if abs(thumb_tip[0] - pinky_tip[0]) < 20 and abs(thumb_tip[1] - pinky_tip[1] < 20):
+        thumb_index_touching = True
+
+    if middle_extended and ring_extended and pinky_extended and thumb_index_touching:
+        return True
     return False
 
 # Function to process the frame and generate JSON commands based on finger count
 def process_frame_and_generate_command(img):
     hand, new_img = detector.findHands(img, draw=True, flipType=True)
-    send = False
+    changeLed = False
     soundBuzzer = False
+    dispensePill = False
     global fingers
+    global buzzerFrames
+    global pillFrames
 
     gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
     
@@ -107,24 +151,34 @@ def process_frame_and_generate_command(img):
         for h in hand:
             if h["type"] == "Right":
                 # Count fingers for the right hand
-                send = countFingers(h)
+                changeLed = countFingers(h)
             elif h["type"] == "Left":
                 # Check for buzzer gesture with the left hand
-                soundBuzzer = isBuzzer(h, img)
+                soundBuzzer = isBuzzer(h)
+                # Check for pill dispensing gesture with the left hand
+                dispensePill = isDispensePill(h)
 
-    if send:
-        # add number to history array
-        # collection.update_one({"id": "light"}, {"$push": {"history": fingers}})
-
+    if changeLed:
         return {
             "action": "adjust_led",
             "brightness": fingers * 20,
         }, img
 
     if soundBuzzer:
-        return {
-            "action": "sound_buzzer",
-        }, img
+        buzzerFrames += 1
+        if buzzerFrames == 5:
+            buzzerFrames = 0
+            return {
+                "action": "sound_buzzer",
+            }, img
+    
+    if dispensePill:
+        pillFrames += 1
+        if pillFrames == 5:
+            pillFrames = 0
+            return {
+                "action": "dispense_pill",
+            }, img
     
     return {
         "action": "none",
