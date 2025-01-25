@@ -18,7 +18,8 @@ id_to_names = {0: "cindyli", 1: "elise"}
 # MongoDB connection for storing stats
 uri = "mongodb+srv://cyang2023:Bthgt0SuRB39sFB1@cluster0.ka5bm.mongodb.net/pi-pal?retryWrites=true&w=majority&appName=Cluster0"
 client = MongoClient(uri)
-collection = client["stats"]
+database = client["pi-pal"]
+collection = database["stats"]
 fingers = 0
 
 # Raspberry Pi setup for sending commands
@@ -94,8 +95,8 @@ def process_frame_and_generate_command(img):
                     playsound('audio/buzzer.mp3')  # Play buzzer sound
 
     if send:
-        # Add number to history array in MongoDB
-        collection.update_one({"id": "light"}, {"$push": {"history": fingers}})
+        # add number to history array
+        # collection.update_one({"id": "light"}, {"$push": {"history": fingers}})
 
         return {
             "action": "adjust_led",
