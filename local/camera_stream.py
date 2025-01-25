@@ -1,7 +1,7 @@
 import cv2
 import socket
 import json
-import time
+from time import sleep
 from cvzone.HandTrackingModule import HandDetector
 from pymongo.mongo_client import MongoClient
 from datetime import datetime
@@ -206,6 +206,7 @@ while True:
     command, img = process_frame_and_generate_command(frame)
     if command["action"] != "none": 
         send_command_to_pi(command, raspberry_pi_ip, raspberry_pi_port)
+        sleep(10)
 
     # Display the frame (optional for debugging)
     cv2.imshow("Camera Feed", img)
