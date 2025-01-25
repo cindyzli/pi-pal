@@ -31,8 +31,23 @@ cap = cv2.VideoCapture(0)
 # Function to process frame and count fingers raised
 def countFingers(hand):
     global fingers
+    landmarks = hand['lmList']
+
     fingerup = detector.fingersUp(hand)   
-    if fingerup == [0, 0, 0, 0, 0] and fingers != 0:
+    
+    thumb_tip = landmarks[4]   # Thumb tip (x, y)
+    index_tip = landmarks[8]   # Index tip (x, y)
+    middle_tip = landmarks[12] # Middle tip (x, y)
+    ring_tip = landmarks[16]   # Ring tip (x, y)
+    pinky_tip = landmarks[20]  # Pinky tip (x, y)
+
+    thumb_curl = thumb_tip[1] > landmarks[2][1]
+    index_curl = index_tip[1] > landmarks[6][1]
+    middle_curl = middle_tip[1] > landmarks[10][1]
+    ring_curl = ring_tip[1] > landmarks[14][1]
+    pinky_curl = pinky_tip[1] > landmarks[18][1]
+
+    if thumb_curl and index_curl and middle_curl and ring_curl and pinky_curl:
         fingers = 0
     elif fingerup == [0, 1, 0, 0, 0] and fingers != 1: 
         fingers = 1
@@ -44,6 +59,7 @@ def countFingers(hand):
         fingers = 4
     elif fingerup == [1, 1, 1, 1, 1] and fingers != 5: 
         fingers = 5
+
     return fingers
 
 # Function to check if left hand is making buzzer sign
@@ -82,7 +98,6 @@ def process_frame_and_generate_command(img):
         for h in hand:
             if h["type"] == "Right":
                 # Count fingers for the right hand
-                fingerup = detector.fingersUp(h)   
                 send = countFingers(h) != fingers
             elif h["type"] == "Left":
                 # Check for buzzer gesture with the left hand
