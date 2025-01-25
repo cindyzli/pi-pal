@@ -34,17 +34,23 @@ def countFingers(hand):
     fingerup = detector.fingersUp(hand)   
     if fingerup == [0, 0, 0, 0, 0] and fingers != 0:
         fingers = 0
+        return True
     elif fingerup == [0, 1, 0, 0, 0] and fingers != 1: 
         fingers = 1
+        return True
     elif fingerup == [0, 1, 1, 0, 0] and fingers != 2: 
         fingers = 2
+        return True
     elif fingerup == [0, 1, 1, 1, 0] and fingers != 3: 
         fingers = 3
+        return True
     elif fingerup == [0, 1, 1, 1, 1] and fingers != 4: 
         fingers = 4
+        return True
     elif fingerup == [1, 1, 1, 1, 1] and fingers != 5: 
         fingers = 5
-    return fingers
+        return True
+    return False
 
 # Function to check if left hand is making buzzer sign
 def isBuzzer(hand, img):
@@ -72,18 +78,36 @@ def isBuzzer(hand, img):
 
 # Function to process the frame and generate JSON commands based on finger count
 def process_frame_and_generate_command(img):
-    hand, img = detector.findHands(img, draw=True, flipType=True)
+    hand, new_img = detector.findHands(img, draw=True, flipType=True)
     send = False
     soundBuzzer = False
     global fingers
+
+    gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
+    
+    # Face detection
+    faces = face_cascade.detectMultiScale(gray, scaleFactor=1.1, minNeighbors=5, minSize=(30, 30))
+    for (x, y, w, h) in faces:
+        face = gray[y:y+h, x:x+w]
+        label, confidence = recognizer.predict(face)
+        if confidence < 50:  # Threshold for recognition
+            cv2.putText(new_img, f"ID: {id_to_names[label]}, Conf: {int(confidence)}", (x, y - 10),
+                        cv2.FONT_HERSHEY_SIMPLEX, 0.8, (0, 255, 0), 2)
+            cv2.rectangle(new_img, (x, y), (x+w, y+h), (0, 255, 0), 2)
+            if not face_recognized:
+                face_recognized = True
+                # playsound('audio/accessgranted.mp3')
+
+        else:
+            cv2.putText(new_img, "Unknown", (x, y - 10), cv2.FONT_HERSHEY_SIMPLEX, 0.8, (0, 0, 255), 2)
+            cv2.rectangle(new_img, (x, y), (x+w, y+h), (0, 0, 255), 2)
 
     if hand:   
         # Process both hands if detected
         for h in hand:
             if h["type"] == "Right":
                 # Count fingers for the right hand
-                fingerup = detector.fingersUp(h)   
-                send = countFingers(h) != fingers
+                send = countFingers(h)
             elif h["type"] == "Left":
                 # Check for buzzer gesture with the left hand
                 soundBuzzer = isBuzzer(h, img)
@@ -121,25 +145,6 @@ while True:
     ret, frame = cap.read()  # Capture a frame
     if not ret:
         break
-
-    gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
-    
-    # Face detection
-    faces = face_cascade.detectMultiScale(gray, scaleFactor=1.1, minNeighbors=5, minSize=(30, 30))
-    for (x, y, w, h) in faces:
-        face = gray[y:y+h, x:x+w]
-        label, confidence = recognizer.predict(face)
-        if confidence < 50:  # Threshold for recognition
-            cv2.putText(frame, f"ID: {id_to_names[label]}, Conf: {int(confidence)}", (x, y - 10),
-                        cv2.FONT_HERSHEY_SIMPLEX, 0.8, (0, 255, 0), 2)
-            cv2.rectangle(frame, (x, y), (x+w, y+h), (0, 255, 0), 2)
-            if not face_recognized:
-                face_recognized = True
-                # playsound('audio/accessgranted.mp3')
-
-        else:
-            cv2.putText(frame, "Unknown", (x, y - 10), cv2.FONT_HERSHEY_SIMPLEX, 0.8, (0, 0, 255), 2)
-            cv2.rectangle(frame, (x, y), (x+w, y+h), (0, 0, 255), 2)
     
     # Process the frame for hand gesture and send commands
     command, img = process_frame_and_generate_command(frame)
