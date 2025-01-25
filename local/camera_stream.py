@@ -68,14 +68,14 @@ def countFingers(hand):
     return False
 
 # Function to check if left hand is making buzzer sign
-def isBuzzer(hand, img):
+def isBuzzer(hand):
     landmarks = hand['lmList']
 
     thumb_tip = landmarks[4]   # Thumb tip (x, y)
-    pinky_tip = landmarks[20]  # Pinky tip (x, y)
     index_tip = landmarks[8]   # Index tip (x, y)
     middle_tip = landmarks[12] # Middle tip (x, y)
     ring_tip = landmarks[16]   # Ring tip (x, y)
+    pinky_tip = landmarks[20]  # Pinky tip (x, y)
     
     # Check if thumb and pinky are extended
     thumb_extended = thumb_tip[1] < landmarks[3][1]
@@ -88,14 +88,37 @@ def isBuzzer(hand, img):
 
     if thumb_extended and pinky_extended and index_curl and middle_curl and ring_curl:
         return True
+    return False
+
+def isDispensePill(hand):
+    landmarks = hand['lmList']
+
+    thumb_tip = landmarks[4]   # Thumb tip (x, y)
+    index_tip = landmarks[8]   # Index tip (x, y)
+    middle_tip = landmarks[12] # Middle tip (x, y)
+    ring_tip = landmarks[16]   # Ring tip (x, y)
+    pinky_tip = landmarks[20]  # Pinky tip (x, y)
     
+    # Check if middle, ring, and pinky fingers are extended
+    middle_extended = middle_tip[1] < landmarks[9][1]
+    ring_extended = ring_tip[1] < landmarks[13][1]    
+    pinky_extended = pinky_tip[1] < landmarks[17][1]
+
+    # Check if thumb and index tip are touching
+    thumb_index_touching = False
+    if abs(thumb_tip[0] - pinky_tip[0]) < 20 and abs(thumb_tip[1] - pinky_tip[1] < 20):
+        thumb_index_touching = True
+
+    if middle_extended and ring_extended and pinky_extended and thumb_index_touching:
+        return True
     return False
 
 # Function to process the frame and generate JSON commands based on finger count
 def process_frame_and_generate_command(img):
     hand, new_img = detector.findHands(img, draw=True, flipType=True)
-    send = False
+    changeLed = False
     soundBuzzer = False
+    dispensePill = False
     global fingers
 
     gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
@@ -122,15 +145,14 @@ def process_frame_and_generate_command(img):
         for h in hand:
             if h["type"] == "Right":
                 # Count fingers for the right hand
-                send = countFingers(h)
+                changeLed = countFingers(h)
             elif h["type"] == "Left":
                 # Check for buzzer gesture with the left hand
-                soundBuzzer = isBuzzer(h, img)
+                soundBuzzer = isBuzzer(h)
+                # Check for pill dispensing gesture with the left hand
+                dispensePill = isDispensePill(h)
 
-    if send:
-        # add number to history array
-        # collection.update_one({"id": "light"}, {"$push": {"history": fingers}})
-
+    if changeLed:
         return {
             "action": "adjust_led",
             "brightness": fingers * 20,
@@ -139,6 +161,11 @@ def process_frame_and_generate_command(img):
     if soundBuzzer:
         return {
             "action": "sound_buzzer",
+        }, img
+    
+    if dispensePill:
+        return {
+            "action": "dispense_pill",
         }, img
     
     return {
