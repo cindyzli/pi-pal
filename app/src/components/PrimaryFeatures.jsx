@@ -30,6 +30,16 @@ let global_features = [
         "timestamp": "2021-10-01T00:00:00Z",
         "action": "Nurse Call",
         "value": "Major"
+      }, 
+      {
+        "timestamp": "2021-10-01T00:00:00Z",
+        "action": "Medicine Dispense",
+        "value": "1"
+      },
+      {
+        "timestamp": "2021-10-01T00:00:00Z",
+        "action": "Medicine Dispense",
+        "value": "2"
       }
     ]
   },
@@ -50,6 +60,16 @@ let global_features = [
         "timestamp": "2021-10-01T00:00:00Z",
         "action": "Nurse Call",
         "value": "Major"
+      },
+      {
+        "timestamp": "2021-10-01T00:00:00Z",
+        "action": "Medicine Dispense",
+        "value": "1"
+      },
+      {
+        "timestamp": "2021-10-01T00:00:00Z",
+        "action": "Medicine Dispense",
+        "value": "2"
       }
     ]
   },
@@ -70,6 +90,16 @@ let global_features = [
         "timestamp": "2021-10-01T00:00:00Z",
         "action": "Medicine Dispense",
         "value": "1"
+      }, 
+      {
+        "timestamp": "2021-10-01T00:00:00Z",
+        "action": "Medicine Dispense",
+        "value": "2"
+      },
+      {
+        "timestamp": "2021-10-01T00:00:00Z",
+        "action": "Medicine Dispense",
+        "value": "3"
       }
     ]
   },
@@ -110,7 +140,7 @@ export function PrimaryFeatures() {
 
   return (
     <section
-      id="features"
+      id="dashboard"
       aria-label="Features for running your books"
       className="relative overflow-hidden bg-green-600 pt-20 pb-28 sm:py-32"
     >
@@ -235,6 +265,28 @@ export function PrimaryFeatures() {
                               </td>
                               <td className="px-6 py-4">
                                 {feature.data[2].value}
+                              </td>
+                            </tr>
+                            <tr className="bg-gray-100 hover:bg-gray-200">
+                              <th scope="row" className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap">
+                                {feature.data[3].timestamp}
+                              </th>
+                              <td className="px-6 py-4">
+                                {feature.data[3].action}
+                              </td>
+                              <td className="px-6 py-4">
+                                {feature.data[3].value}
+                              </td>
+                            </tr>
+                            <tr className="bg-gray-100 hover:bg-gray-200">
+                              <th scope="row" className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap">
+                                {feature.data[4].timestamp}
+                              </th>
+                              <td className="px-6 py-4">
+                                {feature.data[4].action}
+                              </td>
+                              <td className="px-6 py-4">
+                                {feature.data[4].value}
                               </td>
                             </tr>
                           </tbody>

@@ -4,6 +4,7 @@ import json
 import time
 from cvzone.HandTrackingModule import HandDetector
 from pymongo.mongo_client import MongoClient
+import datetime
 
 # Initialize HandDetector for hand tracking
 detector = HandDetector(staticMode=False, maxHands=2, modelComplexity=1, detectionCon=0.5, minTrackCon=0.5)
@@ -159,12 +160,22 @@ def process_frame_and_generate_command(img):
                 dispensePill = isDispensePill(h)
 
     if changeLed:
+        collection.insert_one({
+            "timestamp": datetime.now(),
+            "action": "dimming_lights",
+            "value": str(fingers * 20) + "%"
+        })
         return {
             "action": "adjust_led",
             "brightness": fingers * 20,
         }, img
 
     if soundBuzzer:
+        collection.insert_one({
+            "timestamp": datetime.now(),
+            "action": "call_sign",
+            "value": "emergency",
+        })
         buzzerFrames += 1
         if buzzerFrames == 5:
             buzzerFrames = 0
@@ -173,6 +184,11 @@ def process_frame_and_generate_command(img):
             }, img
     
     if dispensePill:
+        collection.insert_one({
+            "timestamp": datetime.now(),
+            "action": "nurse_request",
+            "value": "painkillers"
+        })
         pillFrames += 1
         if pillFrames == 5:
             pillFrames = 0
