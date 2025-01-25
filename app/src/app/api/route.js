@@ -69,7 +69,7 @@ export async function GET() {
     const collection = database.collection('stats')
     const patients = await collection.find().toArray()
     await client.close()
-    return new Response(JSON.stringify(patients), {
+    return new Response(JSON.stringify(patients.reverse()), {
         headers: {
             'content-type': 'application/json',
         },
