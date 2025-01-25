@@ -3,6 +3,7 @@ import json
 import RPi.GPIO as GPIO
 import time
 
+GPIO.cleanup()
 LED_PIN = 23
 
 GPIO.setmode(GPIO.BCM)

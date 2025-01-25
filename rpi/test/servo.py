@@ -9,3 +9,5 @@ servo.angle = 0
 sleep(0.2)
 servo.angle = 90
 sleep(1)
+
+servo.close()
