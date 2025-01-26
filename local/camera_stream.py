@@ -159,26 +159,26 @@ def process_frame_and_generate_command(img):
         }, img
 
     if soundBuzzer:
-        collection.insert_one({
-            "timestamp": datetime.now(),
-            "action": "call_sign",
-            "value": "emergency",
-        })
         buzzerFrames += 1
         if buzzerFrames == 5:
+            collection.insert_one({
+                "timestamp": datetime.now(),
+                "action": "call_sign",
+                "value": "emergency",
+            })
             buzzerFrames = 0
             return {
                 "action": "sound_buzzer",
             }, img
     
     if dispensePill and face_recognized:
-        collection.insert_one({
-            "timestamp": datetime.now(),
-            "action": "nurse_request",
-            "value": "painkillers"
-        })
         pillFrames += 1
         if pillFrames == 5:
+            collection.insert_one({
+                "timestamp": datetime.now(),
+                "action": "nurse_request",
+                "value": "painkillers"
+            })
             pillFrames = 0
             return {
                 "action": "dispense_pill",
@@ -195,7 +195,7 @@ def send_command_to_pi(command, host, port):
     with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as client_socket:
         client_socket.connect((host, port))  # Connect to Raspberry Pi
         client_socket.sendall(command_json.encode('utf-8'))  # Send the JSON data
-        print(f"Sent command: {command_json}")
+        # print(f"Sent command: {command_json}")
 
 # Main loop for video capture and processing
 # face_recognized = False
@@ -207,8 +207,8 @@ while True:
     
     # Process the frame for hand gesture and send commands
     command, img = process_frame_and_generate_command(frame)
-    # if command["action"] != "none" and time.time() > next_time_can_send: 
-    send_command_to_pi(command, raspberry_pi_ip, raspberry_pi_port)
+    if command["action"] != "none": # and time.time() > next_time_can_send: 
+        send_command_to_pi(command, raspberry_pi_ip, raspberry_pi_port)
         # next_time_can_send = time.time() + 5
 
     # Display the frame (optional for debugging)
