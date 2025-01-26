@@ -81,24 +81,24 @@ export default function AnalyticsBoard() {
                     <p className="text-3xl font-bold">{analytics.totalRequests}</p>
                 </div> */}
                 <div className="p-4 bg-green-100 rounded-lg shadow">
-                    <h2 className="text-lg font-semibold">Requests in Past 7 Days</h2>
-                    <p className="text-3xl font-bold">{analytics.past7DaysRequests}</p>
+                    <h2 className="text-md font-semibold">Requests in Past 7 Days</h2>
+                    <p className="text-xl font-bold">{analytics.past7DaysRequests}</p>
                 </div>
                 <div className="p-4 bg-purple-100 rounded-lg shadow">
-                    <h2 className="text-lg font-semibold">Requests in Past 10 Hours</h2>
-                    <p className="text-3xl font-bold">{analytics.past10HoursRequests}</p>
+                    <h2 className="text-md font-semibold">Requests in Past 10 Hours</h2>
+                    <p className="text-xl font-bold">{analytics.past10HoursRequests}</p>
                 </div>
                 <div className="p-4 bg-green-100 rounded-lg shadow">
-                    <h2 className="text-lg font-semibold">Time Since Last Nurse Visit</h2>
-                    <p className="text-3xl font-bold">{analytics.timeSinceLastRequest}</p>
+                    <h2 className="text-md font-semibold">Time Since Last Nurse Visit</h2>
+                    <p className="text-xl font-bold">{analytics.timeSinceLastRequest}</p>
                 </div>
                 <div className="p-4 bg-purple-100 rounded-lg shadow">
-                    <h2 className="text-lg font-semibold">Average Dimming Lights Value</h2>
-                    <p className="text-3xl font-bold">{analytics.averageDimmingValue}</p>
+                    <h2 className="text-md font-semibold">Average Dimming Lights Value</h2>
+                    <p className="text-xl font-bold">{analytics.averageDimmingValue}</p>
                 </div>
             </div>
             <div className="p-4 bg-gray-100 rounded-lg shadow">
-                <h2 className="text-lg font-semibold">Recent Requests</h2>
+                <h2 className="text-nd font-semibold">Recent Requests</h2>
                 <ul className="divide-y divide-gray-300">
                     {data.slice(0, 5).map((entry) => (
                         <li key={entry._id} className="py-2">
