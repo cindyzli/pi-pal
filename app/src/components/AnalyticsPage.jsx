@@ -89,7 +89,7 @@ export default function AnalyticsBoard() {
                     <p className="text-3xl font-bold">{analytics.past10HoursRequests}</p>
                 </div>
                 <div className="p-4 bg-green-100 rounded-lg shadow">
-                    <h2 className="text-lg font-semibold">Time Since Last Request</h2>
+                    <h2 className="text-lg font-semibold">Time Since Last Nurse Visit</h2>
                     <p className="text-3xl font-bold">{analytics.timeSinceLastRequest}</p>
                 </div>
                 <div className="p-4 bg-purple-100 rounded-lg shadow">
