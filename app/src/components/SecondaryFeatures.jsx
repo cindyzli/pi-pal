@@ -9,6 +9,8 @@ import { Container } from '@/components/Container'
 import screenshotContacts from '@/images/screenshots/contacts.png'
 import screenshotInventory from '@/images/screenshots/inventory.png'
 import screenshotProfitLoss from '@/images/screenshots/profit-loss.png'
+import AnalyticsBoard from './AnalyticsPage'
+
 
 const features = [
   {
@@ -158,7 +160,7 @@ function FeaturesDesktop() {
     <TabGroup className="hidden lg:mt-20 lg:block">
       {({ selectedIndex }) => (
         <>
-          <TabList className="grid grid-cols-3 gap-x-8">
+          {/* <TabList className="grid grid-cols-3 gap-x-8">
             {features.map((feature, featureIndex) => (
               <Feature
                 key={feature.summary}
@@ -175,8 +177,9 @@ function FeaturesDesktop() {
                 className="relative"
               />
             ))}
-          </TabList>
-          <TabPanels className="relative mt-20 overflow-hidden rounded-4xl bg-slate-200 px-14 py-16 xl:px-16">
+          </TabList> */}
+          <AnalyticsBoard></AnalyticsBoard>
+          {/* <TabPanels className="relative mt-20 overflow-hidden rounded-4xl bg-slate-200 px-14 py-16 xl:px-16">
             <div className="-mx-5 flex">
               {features.map((feature, featureIndex) => (
                 <TabPanel
@@ -201,7 +204,7 @@ function FeaturesDesktop() {
               ))}
             </div>
             <div className="pointer-events-none absolute inset-0 rounded-4xl ring-1 ring-slate-900/10 ring-inset" />
-          </TabPanels>
+          </TabPanels> */}
         </>
       )}
     </TabGroup>
@@ -218,11 +221,10 @@ export function SecondaryFeatures() {
       <Container>
         <div className="mx-auto max-w-2xl md:text-center">
           <h2 className="font-display text-3xl tracking-tight text-slate-900 sm:text-4xl">
-            Simplify everyday business tasks.
+            Analytics
           </h2>
           <p className="mt-4 text-lg tracking-tight text-slate-700">
-            Because you’d probably be a little confused if we suggested you
-            complicate your everyday business tasks instead.
+            Dashboard summary
           </p>
         </div>
         <FeaturesMobile />
