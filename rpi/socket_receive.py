@@ -21,6 +21,7 @@ executingCommand = False
 
 buzzer = Buzzer(17)
 servo = AngularServo(18, min_pulse_width=0.0006, max_pulse_width=0.0023)
+servo.angle = 80
 
 # Function to handle the incoming command
 def handle_command(command):
@@ -36,11 +37,11 @@ def handle_command(command):
         sleep(2)
         buzzer.off()
     if command["action"] == "dispense_pill":
-        servo.angle = 90
+        servo.angle = 80
         sleep(1)
         servo.angle = 0
         sleep(0.2)
-        servo.angle = 90
+        servo.angle = 80
         sleep(1)
     executingCommand = False
         
