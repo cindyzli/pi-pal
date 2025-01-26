@@ -31,9 +31,10 @@ export function Hero() {
         A CV-based approach to reducing infection risk in medical facilities, complete with a comprehensive analytics dashboard for tracking patient needs.
       </p>
       <div className="mt-10 flex justify-center gap-x-6">
-        <Button href="/register">GitHub</Button>
+        <Button href="https://github.com/cindyzli/pi-pal" target="_blank">GitHub</Button>
         <Button
-          href="https://www.youtube.com/watch?v=dQw4w9WgXcQ"
+          href="https://youtu.be/z5cDUVNc4yI"
+          target="_blank"
           variant="outline"
         >
           <svg

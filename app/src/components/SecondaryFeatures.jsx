@@ -222,7 +222,7 @@ function FeaturesDesktop() {
 export function SecondaryFeatures() {
   return (
     <section
-      id="secondary-features"
+      id="analytics"
       aria-label="Features for simplifying everyday business tasks"
       className="pt-20 pb-14 sm:pt-32 sm:pb-20 lg:pb-32"
     >
