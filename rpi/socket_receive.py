@@ -55,7 +55,7 @@ def start_server(host, port):
                 data = conn.recv(1024)  # Receive data from the client
                 if data:
                     try:
-                        command = json.loads(data.decode('utf-8'))  # Parse the JSON data
+                        command = json.loads(data.decode('utf-5'))  # Parse the JSON data
                         handle_command(command)  # Process the command
                     except json.JSONDecodeError:
                         print("Received invalid JSON data")
