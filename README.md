@@ -130,7 +130,7 @@ The Raspberry Pi is wired to control essential room devices via its GPIO (Genera
 
 ### Analytics
 
-Our system integrates with Databricks and OpenAI for real-time data processing and analytics, enabling hospitals to monitor patient requests, nurse responses, and room conditions in a centralized dashboard. All data from the backend servers are stored in MongoDB for easy access and retrieval.
+Our system integrates with Databricks and OpenAI for real-time data processing and analytics, enabling hospitals to monitor patient requests, nurse responses, and room conditions in a centralized dashboard. All data from the backend servers are stored in MongoDB for easy access and retrieval. We used Terraform to set up and manage MongoDB and Databricks resources.
 
 We display key metrics on a user-friendly interface coded using Next.js and Tailwind CSS, ensuring that hospital staff can quickly access and act on critical information. This frontend is hosted on GoDaddy.
 
@@ -143,7 +143,7 @@ Cindy Li (face recognition, analytics) - cl2674@cornell.edu
 
 Cindy Yang (rpi pipeline, frontend) - cwyang@umich.edu
 
-Elise Zhu (gesture recognition, logo) - eyz7@georgetown.edu
+Elise Zhu (gesture recognition, design) - eyz7@georgetown.edu
 
 ![alt text](image-3.png)
 
