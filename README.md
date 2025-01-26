@@ -134,7 +134,7 @@ Our system integrates with Databricks and OpenAI for real-time data processing a
 
 We display key metrics on a user-friendly interface coded using Next.js and Tailwind CSS, ensuring that hospital staff can quickly access and act on critical information. This frontend is hosted on GoDaddy.
 
-![alt text](image-2.png)
+![alt text](image-4.png)
 
 <!-- CONTACT -->
 ## Contact
