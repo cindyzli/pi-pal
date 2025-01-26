@@ -124,7 +124,7 @@ def process_frame_and_generate_command(img):
     for (x, y, w, h) in faces:
         face = gray[y:y+h, x:x+w]
         label, confidence = recognizer.predict(face)
-        if confidence < 90:  # Threshold for recognition
+        if confidence < 65:  # Threshold for recognition
             cv2.putText(new_img, f"ID: {id_to_names[label]}, Conf: {int(confidence)}", (x, y - 10), cv2.FONT_HERSHEY_SIMPLEX, 0.8, (0, 255, 0), 2)
             cv2.rectangle(new_img, (x, y), (x+w, y+h), (0, 255, 0), 2)
             if not face_recognized:
@@ -171,7 +171,7 @@ def process_frame_and_generate_command(img):
                 "action": "sound_buzzer",
             }, img
     
-    if dispensePill:
+    if dispensePill and face_recognized:
         collection.insert_one({
             "timestamp": datetime.now(),
             "action": "nurse_request",
@@ -199,6 +199,7 @@ def send_command_to_pi(command, host, port):
 
 # Main loop for video capture and processing
 # face_recognized = False
+next_time_can_send = 0
 while True:
     ret, frame = cap.read()  # Capture a frame
     if not ret:
@@ -206,9 +207,9 @@ while True:
     
     # Process the frame for hand gesture and send commands
     command, img = process_frame_and_generate_command(frame)
-    if command["action"] != "none": 
-        send_command_to_pi(command, raspberry_pi_ip, raspberry_pi_port)
-        # sleep(10)
+    # if command["action"] != "none" and time.time() > next_time_can_send: 
+    send_command_to_pi(command, raspberry_pi_ip, raspberry_pi_port)
+        # next_time_can_send = time.time() + 5
 
     # Display the frame (optional for debugging)
     cv2.imshow("Camera Feed", img)
