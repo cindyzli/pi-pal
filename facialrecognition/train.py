@@ -35,4 +35,4 @@ def train_model(data_path):
     print(f"Labels (IDs): {ids}")
     print("Training complete.")
 
-train_model('./people')
+train_model('facialrecognition/people')

@@ -1,13 +1,15 @@
+import time
 import cv2
 import socket
 import json
-import time
+from time import sleep
 from cvzone.HandTrackingModule import HandDetector
 from pymongo.mongo_client import MongoClient
 from datetime import datetime
 
 # Initialize HandDetector for hand tracking
 detector = HandDetector(staticMode=False, maxHands=2, modelComplexity=1, detectionCon=0.5, minTrackCon=0.5)
+face_recognized = False
 
 # Initialize face recognizer
 recognizer = cv2.face.LBPHFaceRecognizer_create()
@@ -106,6 +108,7 @@ def isDispensePill(hand):
 
 # Function to process the frame and generate JSON commands based on finger count
 def process_frame_and_generate_command(img):
+    face_recognized = False
     hand, new_img = detector.findHands(img, draw=True, flipType=True)
     changeLed = False
     soundBuzzer = False
@@ -121,9 +124,8 @@ def process_frame_and_generate_command(img):
     for (x, y, w, h) in faces:
         face = gray[y:y+h, x:x+w]
         label, confidence = recognizer.predict(face)
-        if confidence < 50:  # Threshold for recognition
-            cv2.putText(new_img, f"ID: {id_to_names[label]}, Conf: {int(confidence)}", (x, y - 10),
-                        cv2.FONT_HERSHEY_SIMPLEX, 0.8, (0, 255, 0), 2)
+        if confidence < 90:  # Threshold for recognition
+            cv2.putText(new_img, f"ID: {id_to_names[label]}, Conf: {int(confidence)}", (x, y - 10), cv2.FONT_HERSHEY_SIMPLEX, 0.8, (0, 255, 0), 2)
             cv2.rectangle(new_img, (x, y), (x+w, y+h), (0, 255, 0), 2)
             if not face_recognized:
                 face_recognized = True
@@ -169,7 +171,7 @@ def process_frame_and_generate_command(img):
                 "action": "sound_buzzer",
             }, img
     
-    if dispensePill:
+    if dispensePill and face_recognized:
         collection.insert_one({
             "timestamp": datetime.now(),
             "action": "nurse_request",
@@ -196,7 +198,7 @@ def send_command_to_pi(command, host, port):
         print(f"Sent command: {command_json}")
 
 # Main loop for video capture and processing
-face_recognized = False
+# face_recognized = False
 while True:
     ret, frame = cap.read()  # Capture a frame
     if not ret:
@@ -206,6 +208,7 @@ while True:
     command, img = process_frame_and_generate_command(frame)
     if command["action"] != "none": 
         send_command_to_pi(command, raspberry_pi_ip, raspberry_pi_port)
+        sleep(10)
 
     # Display the frame (optional for debugging)
     cv2.imshow("Camera Feed", img)

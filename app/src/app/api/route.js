@@ -1,6 +1,6 @@
 // import { MongoClient } from 'mongodb'
-// // import { VectorStoreIndex, Document } from 'llama_index';
-// import { Configuration, OpenAIApi } from 'openai';
+import { PineconeVectorStore } from "llamaindex/vector-store/PineconeVectorStore";
+import { Configuration, OpenAIApi } from 'openai';
 
 // export const dynamic = 'force-static'
 
@@ -35,19 +35,19 @@
 
 //     const prompt = `Answer the following based on the given data: ${indexedData}`;
 
-// //     try {
-// //         const gptResponse = await openai.createCompletion({
-// //             model: 'text-davinci-003',
-// //             prompt: prompt,
-// //             max_tokens: 150,
-// //         });
+//     try {
+//         const gptResponse = await openai.createCompletion({
+//             model: 'text-davinci-003',
+//             prompt: prompt,
+//             max_tokens: 150,
+//         });
 
-// //         return gptResponse.data.choices[0].text.trim();
-// //     } catch (error) {
-// //         console.error("Error querying GPT:", error);
-// //         return "Sorry, I couldn't process your request.";
-// //     }
-// // }
+//         return gptResponse.data.choices[0].text.trim();
+//     } catch (error) {
+//         console.error("Error querying GPT:", error);
+//         return "Sorry, I couldn't process your request.";
+//     }
+// }
 
 // export async function GET() {
 //     const query = "Any patterns you see in the patient history";

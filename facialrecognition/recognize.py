@@ -20,7 +20,7 @@ while True:
     for (x, y, w, h) in faces:
         face = gray[y:y+h, x:x+w]
         label, confidence = recognizer.predict(face)
-        if confidence < 36:  # Threshold for recognition
+        if confidence < 90:  # Threshold for recognition
             cv2.putText(frame, f"ID: {id_to_names[label]}, Conf: {int(confidence)}", (x, y - 10),
                         cv2.FONT_HERSHEY_SIMPLEX, 0.8, (0, 255, 0), 2)
             cv2.rectangle(frame, (x, y), (x+w, y+h), (0, 255, 0), 2)
