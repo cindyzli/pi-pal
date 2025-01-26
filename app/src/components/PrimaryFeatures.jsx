@@ -5,6 +5,8 @@ import Image from 'next/image'
 import { Tab, TabGroup, TabList, TabPanel, TabPanels } from '@headlessui/react'
 import clsx from 'clsx'
 
+import { Loading } from '@/components/Loading'
+
 import { Container } from '@/components/Container'
 import backgroundImage from '@/images/background-features.jpg'
 import screenshotExpenses from '@/images/screenshots/expenses.png'
@@ -121,7 +123,6 @@ export function PrimaryFeatures() {
   }
 
   useEffect(() => {
-    setFeatures(features)
     getData()
 
     let lgMediaQuery = window.matchMedia('(min-width: 1024px)')
@@ -138,8 +139,12 @@ export function PrimaryFeatures() {
     }
   }, [])
 
+  if (!features.length) {
+    return <Loading />
+  }
+
   return (
-    <section
+    <section 
       id="dashboard"
       aria-label="Features for running your books"
       className="relative overflow-hidden bg-green-600 pt-20 pb-28 sm:py-32"
@@ -164,6 +169,7 @@ export function PrimaryFeatures() {
         <TabGroup
           className="mt-16 grid grid-cols-1 items-center gap-y-2 pt-10 sm:gap-y-6 md:mt-20 lg:grid-cols-12 lg:pt-0"
           vertical={tabOrientation === 'vertical'}
+          defaultIndex={0}
         >
           {({ selectedIndex }) => (
             <>
