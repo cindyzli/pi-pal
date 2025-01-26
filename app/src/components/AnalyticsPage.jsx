@@ -31,11 +31,13 @@ export default function AnalyticsBoard() {
             const totalRequests = data.length;
             const past7DaysRequests = data.filter((entry) => {
                 const timestamp = new Date(entry.timestamp);
+                timestamp.addHours(5);
                 return timestamp >= sevenDaysAgo && timestamp <= now;
             }).length;
 
             const past10HoursRequests = data.filter((entry) => {
                 const timestamp = new Date(entry.timestamp);
+                timestamp.addHours(5);
                 return timestamp >= tenHoursAgo && timestamp <= now;
             }).length;
 
@@ -62,6 +64,11 @@ export default function AnalyticsBoard() {
             });
         }
     }, [data]);
+
+    Date.prototype.addHours= function(h){
+        this.setHours(this.getHours()+h);
+        return this;
+    }
 
     // Helper function to format time difference
     function formatTimeDifference(start, end) {
@@ -104,7 +111,7 @@ export default function AnalyticsBoard() {
                         <li key={entry._id} className="py-2">
                             <p className="font-medium">Action: {entry.action}</p>
                             <p className="text-sm text-gray-600">
-                                Value: {entry.value} | Time: {new Date(entry.timestamp).toLocaleString()}
+                                Value: {entry.value} | Time: {new Date(entry.timestamp).addHours(5).toLocaleString()}
                             </p>
                         </li>
                     ))}
