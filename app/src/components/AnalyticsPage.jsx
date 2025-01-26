@@ -43,7 +43,7 @@ export default function AnalyticsBoard() {
 
             const lastRequest = data[0]; // Assuming data is already sorted by timestamp
             const timeSinceLastRequest = lastRequest
-                ? formatTimeDifference(new Date(lastRequest.timestamp), now)
+                ? formatTimeDifference(new Date(lastRequest.timestamp).addHours(5), now)
                 : "N/A";
 
             const dimmingValues = data
