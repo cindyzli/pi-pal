@@ -208,7 +208,7 @@ while True:
     command, img = process_frame_and_generate_command(frame)
     if command["action"] != "none": 
         send_command_to_pi(command, raspberry_pi_ip, raspberry_pi_port)
-        sleep(10)
+        # sleep(10)
 
     # Display the frame (optional for debugging)
     cv2.imshow("Camera Feed", img)
