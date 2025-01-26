@@ -91,7 +91,7 @@ export function Header() {
           </div>
           <div className="flex items-center gap-x-5 md:gap-x-8">
             <div className="hidden md:block">
-              <NavLink href="/team">Team</NavLink>
+              <NavLink href="#team">Team</NavLink>
             </div>
             <Button href="" color="green">
               <span>

@@ -1,8 +1,5 @@
 // import { MongoClient } from 'mongodb'
-import { PineconeVectorStore } from "llamaindex/vector-store/PineconeVectorStore";
-import { Configuration, OpenAIApi } from 'openai';
-
-// export const dynamic = 'force-static'
+// // export const dynamic = 'force-static'
 
 // export async function queryLlamaIndex(query) {
 //     const index = await getIndex();

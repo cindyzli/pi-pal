@@ -2,6 +2,10 @@ import clsx from 'clsx'
 
 import { Button } from '@/components/Button'
 import { Container } from '@/components/Container'
+import Image from 'next/image'
+import cyang from '@/images/cyang.jpg'
+import cli from '@/images/cli.jpg'
+import ezhu from '@/images/ezhu.jpg'
 
 function SwirlyDoodle(props) {
   return (
@@ -47,48 +51,39 @@ function CheckIcon({ className, ...props }) {
   )
 }
 
-function Plan({ name, price, description, href, features, featured = false }) {
+function Plan({ image, name, price, description, href, features, featured = false }) {
   return (
     <section
       className={clsx(
         'flex flex-col rounded-3xl px-6 sm:px-8',
-        featured ? 'order-first bg-blue-600 py-8 lg:order-none' : 'lg:py-8',
+        featured ? 'order-first bg-green-600 py-8 lg:order-none' : 'lg:py-8 bg-purple-700',
       )}
     >
-      <h3 className="mt-5 font-display text-lg text-white">{name}</h3>
-      <p
-        className={clsx(
-          'mt-2 text-base',
-          featured ? 'text-white' : 'text-slate-400',
-        )}
-      >
-        {description}
-      </p>
-      <p className="order-first font-display text-5xl font-light tracking-tight text-white">
-        {price}
-      </p>
+      <div className="flex mx-auto justify-center items-center" style={{ position: 'relative', width: '200px', height: '200px' }}>
+      <Image src={image} alt={name} style={{borderRadius: '50%', objectFit: 'cover'}} fill/>
+      </div>
       <ul
         role="list"
         className={clsx(
           'order-last mt-10 flex flex-col gap-y-3 text-sm',
-          featured ? 'text-white' : 'text-slate-200',
+          'text-white',
         )}
       >
         {features.map((feature) => (
           <li key={feature} className="flex">
-            <CheckIcon className={featured ? 'text-white' : 'text-slate-400'} />
+            <CheckIcon className={'text-white'} />
             <span className="ml-4">{feature}</span>
           </li>
         ))}
       </ul>
       <Button
         href={href}
-        variant={featured ? 'solid' : 'outline'}
+        variant={'solid'}
         color="white"
         className="mt-8"
         aria-label={`Get started with the ${name} plan for ${price}`}
       >
-        Get started
+        {name}
       </Button>
     </section>
   )
@@ -97,65 +92,55 @@ function Plan({ name, price, description, href, features, featured = false }) {
 export function Pricing() {
   return (
     <section
-      id="pricing"
+      id="team"
       aria-label="Pricing"
       className="bg-slate-900 py-20 sm:py-32"
     >
       <Container>
         <div className="md:text-center">
           <h2 className="font-display text-3xl tracking-tight text-white sm:text-4xl">
-            <span className="relative whitespace-nowrap">
-              <SwirlyDoodle className="absolute top-1/2 left-0 h-[1em] w-full fill-blue-400" />
-              <span className="relative">Simple pricing,</span>
-            </span>{' '}
-            for everyone.
+          Meet{' '}<span className="relative whitespace-nowrap">
+              <SwirlyDoodle className="absolute top-1/2 left-0 h-[1em] w-full fill-green-400" />
+              <span className="relative">Our Team</span>
+            </span>
           </h2>
-          <p className="mt-4 text-lg text-slate-400">
-            It doesn’t matter what size your business is, our software won’t
-            work well for you.
-          </p>
         </div>
         <div className="-mx-4 mt-16 grid max-w-2xl grid-cols-1 gap-y-10 sm:mx-auto lg:-mx-8 lg:max-w-none lg:grid-cols-3 xl:mx-0 xl:gap-x-8">
           <Plan
-            name="Starter"
-            price="$9"
+            image={cyang}
+            name="Cindy Yang"
+            price="Cindy Yang"
             description="Good for anyone who is self-employed and just getting started."
-            href="/register"
+            href="https://www.linkedin.com/in/2023cyang/"
             features={[
-              'Send 10 quotes and invoices',
-              'Connect up to 2 bank accounts',
-              'Track up to 15 expenses per month',
-              'Manual payroll support',
-              'Export up to 3 reports',
+              'University of Michigan \'27',
+              'Computer Engineering',
+              'Professional mansplainer'
             ]}
           />
           <Plan
             featured
-            name="Small business"
+            image={ezhu}
+            name="Elise Zhu"
             price="$15"
             description="Perfect for small / medium sized businesses."
-            href="/register"
+            href="https://www.linkedin.com/in/elise-yz/"
             features={[
-              'Send 25 quotes and invoices',
-              'Connect up to 5 bank accounts',
-              'Track up to 50 expenses per month',
-              'Automated payroll support',
-              'Export up to 12 reports',
-              'Bulk reconcile transactions',
-              'Track in multiple currencies',
+              'Georgetown University \'27',
+              'CS + Math',
+              'Cannot climb a V3'
             ]}
           />
           <Plan
-            name="Enterprise"
+            image={cli}
+            name="Cindy Li"
             price="$39"
             description="For even the biggest enterprise companies."
-            href="/register"
+            href="https://www.linkedin.com/in/cindy-li-569a30187/"
             features={[
-              'Send unlimited quotes and invoices',
-              'Connect up to 15 bank accounts',
-              'Track up to 200 expenses per month',
-              'Automated payroll support',
-              'Export up to 25 reports, including TPS',
+              'Cornell University \'27',
+              'Computer Science',
+              'Ate packing peanuts as a kid'
             ]}
           />
         </div>
