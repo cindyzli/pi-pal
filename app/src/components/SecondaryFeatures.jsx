@@ -6,18 +6,18 @@ import { Tab, TabGroup, TabList, TabPanel, TabPanels } from '@headlessui/react'
 import clsx from 'clsx'
 
 import { Container } from '@/components/Container'
-import screenshotContacts from '@/images/screenshots/contacts.png'
-import screenshotInventory from '@/images/screenshots/inventory.png'
-import screenshotProfitLoss from '@/images/screenshots/profit-loss.png'
+import screenshotContacts from '@/images/screenshots/patient3.png'
+import screenshotInventory from '@/images/screenshots/patient2.png'
+import screenshotProfitLoss from '@/images/screenshots/patient3.png'
 import AnalyticsBoard from './AnalyticsPage'
 
 
 const features = [
   {
-    name: 'Reporting',
-    summary: 'Stay on top of things with always up-to-date reporting features.',
+    name: 'Patient 1',
+    summary: 'Room 105',
     description:
-      'We talked about reporting in the section above but we needed three items here, so mentioning it one more time for posterity.',
+      'Frequently requesting the lights to be dimmed, which may indicate sensitivity to light or discomfort in brightly lit environments. Possible heightened sensitivity to environmental stimuli or difficulty relaxing. May need assessment for headaches, migraines, or anxiety.',
     image: screenshotProfitLoss,
     icon: function ReportingIcon() {
       let id = useId()
@@ -48,11 +48,11 @@ const features = [
     },
   },
   {
-    name: 'Inventory',
+    name: 'Patient 2',
     summary:
-      'Never lose track of what’s in stock with accurate inventory tracking.',
+      'Room 106',
     description:
-      'We don’t offer this as part of our software but that statement is inarguably true. Accurate inventory tracking would help you for sure.',
+      'Pressing the call button often, even after recent assistance. This behavior could stem from unmet needs, anxiety, or confusion. Consider checking for underlying pain, distress, or cognitive issues.',
     image: screenshotInventory,
     icon: function InventoryIcon() {
       return (
@@ -76,11 +76,11 @@ const features = [
     },
   },
   {
-    name: 'Contacts',
+    name: 'Patient 3',
     summary:
-      'Organize all of your contacts, service providers, and invoices in one place.',
+      'Room 107',
     description:
-      'This also isn’t actually a feature, it’s just some friendly advice. We definitely recommend that you do this, you’ll feel really organized and professional.',
+      'Increasing frequency of requests for assistance with minor tasks. Could be feeling lonely or seeking interaction. Possible early signs of reduced confidence in mobility or independence.',
     image: screenshotContacts,
     icon: function ContactsIcon() {
       return (
@@ -132,6 +132,7 @@ function Feature({ feature, isActive, className, ...props }) {
   )
 }
 
+
 function FeaturesMobile() {
   return (
     <div className="-mx-4 mt-20 flex flex-col gap-y-10 overflow-hidden px-4 sm:-mx-6 sm:px-6 lg:hidden">
@@ -160,7 +161,7 @@ function FeaturesDesktop() {
     <TabGroup className="hidden lg:mt-20 lg:block">
       {({ selectedIndex }) => (
         <>
-          {/* <TabList className="grid grid-cols-3 gap-x-8">
+          <TabList className="grid grid-cols-3 gap-x-8">
             {features.map((feature, featureIndex) => (
               <Feature
                 key={feature.summary}
@@ -177,9 +178,8 @@ function FeaturesDesktop() {
                 className="relative"
               />
             ))}
-          </TabList> */}
-          <AnalyticsBoard></AnalyticsBoard>
-          {/* <TabPanels className="relative mt-20 overflow-hidden rounded-4xl bg-slate-200 px-14 py-16 xl:px-16">
+          </TabList>
+          <TabPanels className="relative mt-20 overflow-hidden rounded-4xl bg-slate-200 px-14 py-16 xl:px-16">
             <div className="-mx-5 flex">
               {features.map((feature, featureIndex) => (
                 <TabPanel
@@ -193,21 +193,29 @@ function FeaturesDesktop() {
                   aria-hidden={featureIndex !== selectedIndex}
                 >
                   <div className="w-[52.75rem] overflow-hidden rounded-xl bg-white ring-1 shadow-lg shadow-slate-900/5 ring-slate-500/10">
-                    <Image
-                      className="w-full"
-                      src={feature.image}
-                      alt=""
-                      sizes="52.75rem"
-                    />
+                    {feature.name === "Patient 1" ? (
+                      <div className="w-full h-auto">
+                        <AnalyticsBoard className="w-full h-auto" />
+                      </div>
+                    ) : (
+                      <Image
+                        className="w-full"
+                        src={feature.image}
+                        alt=""
+                        sizes="65rem"
+                      />
+                    )}
                   </div>
                 </TabPanel>
               ))}
             </div>
             <div className="pointer-events-none absolute inset-0 rounded-4xl ring-1 ring-slate-900/10 ring-inset" />
-          </TabPanels> */}
+          </TabPanels>
         </>
-      )}
-    </TabGroup>
+      )
+      }
+    </TabGroup >
+
   )
 }
 
