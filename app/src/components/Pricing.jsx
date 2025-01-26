@@ -78,6 +78,7 @@ function Plan({ image, name, price, description, href, features, featured = fals
       </ul>
       <Button
         href={href}
+        target="_blank"
         variant={'solid'}
         color="white"
         className="mt-8"

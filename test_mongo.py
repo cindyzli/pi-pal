@@ -4,14 +4,15 @@ uri = "mongodb+srv://cyang2023:Bthgt0SuRB39sFB1@cluster0.ka5bm.mongodb.net/?retr
 
 client = MongoClient(uri)
 database = client["pi-pal"]
-collection = database["stats1"]
+collection = database["stats2"]
 
 entries = [
-    {"action": "call_sign", "value": "Passive", "timestamp": "2025-01-25 10:00:00"},  
     {"action": "dimming_lights", "value": "50%", "timestamp": "2025-01-25 10:05:00"},  
     {"action": "nurse_request", "value": "Pain killers", "timestamp": "2025-01-25 10:10:00"},  
     {"action": "call_sign", "value": "Emergency", "timestamp": "2025-01-25 10:15:00"},  
     {"action": "dimming_lights", "value": "75%", "timestamp": "2025-01-25 10:20:00"},  
+    {"action": "dimming_lights", "value": "50$", "timestamp": "2025-01-25 10:30:00"},  
+    {"action": "call_sign", "value": "Passive", "timestamp": "2025-01-25 10:36:00"},  
 ]
 
 for entry in entries:

@@ -13,7 +13,7 @@ export function Hero() {
   return (
     <Container className="pt-20 pb-16 text-center lg:pt-32">
       <h1 className="mx-auto max-w-4xl font-display text-5xl font-medium tracking-tight text-slate-900 sm:text-7xl">
-        Care so simple, it's just{' '}
+        Care so simple, it&apos;s just{' '}
         <span className="relative whitespace-nowrap text-green-600">
           <svg
             aria-hidden="true"
@@ -31,9 +31,10 @@ export function Hero() {
         A CV-based approach to reducing infection risk in medical facilities, complete with a comprehensive analytics dashboard for tracking patient needs.
       </p>
       <div className="mt-10 flex justify-center gap-x-6">
-        <Button href="/register">GitHub</Button>
+        <Button href="https://github.com/cindyzli/pi-pal" target="_blank">GitHub</Button>
         <Button
-          href="https://www.youtube.com/watch?v=dQw4w9WgXcQ"
+          href="https://youtu.be/z5cDUVNc4yI"
+          target="_blank"
           variant="outline"
         >
           <svg

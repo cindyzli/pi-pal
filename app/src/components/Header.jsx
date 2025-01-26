@@ -93,7 +93,7 @@ export function Header() {
             <div className="hidden md:block">
               <NavLink href="#team">Team</NavLink>
             </div>
-            <Button href="" color="green">
+            <Button href="https://devpost.com/software/pi-pal" target="_blank" color="green">
               <span>
                 Devpost
               </span>

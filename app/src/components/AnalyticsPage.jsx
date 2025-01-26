@@ -12,7 +12,7 @@ export default function AnalyticsBoard() {
 
     useEffect(() => {
         async function fetchData() {
-            const response = await fetch("http://localhost:3000/api");
+            const response = await fetch("/api");
             const patients = await response.json();
             setData(patients);
         }
